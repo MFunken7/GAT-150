@@ -6,6 +6,7 @@
 #include "Audio/AudioSystem.h"
 #include "Core/Time.h"
 #include "Framework/Scene.h"
+#include "Framework/Resource/ResourceManager.h"
 #include "Player.h"
 #include "Enemey.h"
 #include "Renderer/Text.h"
@@ -52,7 +53,9 @@ public:
 
 
 int main(int argc, char* argv[])
-{
+{	
+
+	INFO_LOG("hello world");
 
 	kiko::MemoryTracker::Initialize();
 	kiko::seedRandom((unsigned int)time(nullptr));
@@ -99,13 +102,6 @@ int main(int argc, char* argv[])
 
 		kiko::g_particleSystem.Update(kiko::g_time.GetDeltaTime());
 
-		
-
-		
-
-
-
-
 		//draw game
 		kiko::g_Renderer.SetColor(0, 0, 0, 0);
 		kiko::g_Renderer.BeginFrame();
@@ -120,7 +116,9 @@ int main(int argc, char* argv[])
 			star.Draw(kiko::g_Renderer);
 		}
 
+
 		game->Draw(kiko::g_Renderer);
+
 
 	//	text->Draw(kiko::g_Renderer, 400, 300);
 

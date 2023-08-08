@@ -37,7 +37,7 @@ void Enemey::Update(float dt)
 
 	if (m_fireTimer <= 0 && GetFaceingPlayer()) {
 		kiko::Transform transform{ m_transform.position, m_transform.rotation, 1};
-		std::unique_ptr<Weapon> weapon = std::make_unique<Weapon>(40.0f, transform, kiko::g_manager.Get("bullet.txt"));
+		std::unique_ptr<Weapon> weapon = std::make_unique<Weapon>(40.0f, transform);
 		weapon->m_tag = "EnemeyBullet";
 		m_scene->Add(std::move(weapon));
 		kiko::g_AudioSystem.PlayOneShot("laser");

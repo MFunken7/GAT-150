@@ -4,6 +4,8 @@
 #include "memory.h"
 #include "Time.h"
 
+#include "Logger.h"
+
 //math
 #include "Color.h"
 #include "Vector2.h"

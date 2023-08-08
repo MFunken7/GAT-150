@@ -11,26 +11,31 @@
 #include "Renderer/Text.h"
 #include "Renderer/ModelManager.h"
 
+#include "Framework/Resource/ResourceManager.h"
 #include "Framework/Emitter.h"
+
+#include "Framework/Components/SpriteComponent.h"
+#include "Framework/Components/EnginePhysicsComponent.h"
+
 #include "Renderer/ParticleSystem.h"
 
 bool SpaceGame::Initialize()
 {
 	// create font / text objects
-	m_font = std::make_shared<kiko::Font>("BlackHanSans-Regular.ttf", 24);
-	m_scoreText = std::make_unique<kiko::Text>(m_font);
+	m_font = kiko::g_Resources.Get<kiko::Font>("BlackHanSans-Regular.ttf", 24);//std::make_shared<kiko::Font>("BlackHanSans-Regular.ttf", 24);
+	m_scoreText = std::make_unique<kiko::Text>(kiko::g_Resources.Get<kiko::Font>("BlackHanSans-Regular.ttf", 24));
 	m_scoreText->Create(kiko::g_Renderer, "SCORE: 0000", kiko::Color{1, 1, 1, 1});
 
-	m_livesText = std::make_unique<kiko::Text>(m_font);
+	m_livesText = std::make_unique<kiko::Text>(kiko::g_Resources.Get<kiko::Font>("BlackHanSans-Regular.ttf", 24));
 	m_livesText->Create(kiko::g_Renderer, "LIVES: 0", kiko::Color{1, 1, 1, 1});
 
-	m_titleText = std::make_unique<kiko::Text>(m_font);
+	m_titleText = std::make_unique<kiko::Text>(kiko::g_Resources.Get<kiko::Font>("BlackHanSans-Regular.ttf", 24));
 	m_titleText->Create(kiko::g_Renderer, "SPACE", kiko::Color{1, 1, 1, 1});
 
-	m_gameOverText = std::make_unique<kiko::Text>(m_font);
+	m_gameOverText = std::make_unique<kiko::Text>(kiko::g_Resources.Get<kiko::Font>("BlackHanSans-Regular.ttf", 24));
 	m_gameOverText->Create(kiko::g_Renderer, "GAME OVER", kiko::Color{1, 1, 1, 1});
 
-	m_deadText = std::make_unique<kiko::Text>(m_font);
+	m_deadText = std::make_unique<kiko::Text>(kiko::g_Resources.Get<kiko::Font>("BlackHanSans-Regular.ttf", 24));
 	m_deadText->Create(kiko::g_Renderer, "YOU ARE DEAD", kiko::Color{1, 1, 1, 1});
 
 
@@ -75,10 +80,19 @@ void SpaceGame::Update(float dt)
 	case SpaceGame::eState::StartLevel:
 		m_scene->RemoveAll();
 	{
-		std::unique_ptr<Player> player = std::make_unique<Player>(10.0f, kiko::Pi, kiko::Transform{ {400, 300}, 0, 6 }, kiko::g_manager.Get("ship.txt"));
+		//create player
+		std::unique_ptr<Player> player = std::make_unique<Player>(10.0f, kiko::Pi, kiko::Transform{ {400, 300}, 0, 6 });
 		player->m_tag = "Player";
 		player->m_game = this;
-		player->SetDamping(0.9f);
+
+		//create components
+		std::unique_ptr<kiko::SpriteComponent> component = std::make_unique<kiko::SpriteComponent>();
+		component->m_texture = kiko::g_Resources.Get<kiko::Texture>("rocket.png", kiko::g_Renderer);
+		player->AddComponent(std::move(component));
+		auto physyicsComponent = std::make_unique<kiko::EnginePhysicsComponent>();
+		physyicsComponent->m_damping = 0.9f;
+		player->AddComponent(std::move(physyicsComponent));
+
 		m_scene->Add(move(player));
 
 	}
@@ -96,7 +110,7 @@ void SpaceGame::Update(float dt)
 		
 		if (m_spawnTimer >= m_spawnTime) {
 			m_spawnTimer = 0;
-			std::unique_ptr<Enemey> enemey = std::make_unique<Enemey>(10.0f, kiko::Pi, kiko::Transform{ {kiko::random(600), kiko::random(600)}, kiko::randomf(kiko::TwoPi), 4 }, kiko::g_manager.Get("enemy.txt"));
+			std::unique_ptr<Enemey> enemey = std::make_unique<Enemey>(10.0f, kiko::Pi, kiko::Transform{ {kiko::random(600), kiko::random(600)}, kiko::randomf(kiko::TwoPi), 4 });
 			enemey->m_tag = "Enemey";
 			enemey->m_game = this;
 			m_scene->Add(move(enemey));
@@ -114,7 +128,7 @@ void SpaceGame::Update(float dt)
 
 		break;
 	case SpaceGame::eState::PlayerDeadStart:
-		m_stateTimer = 450;
+		m_stateTimer = 5.0f;
 		if (m_lives == 0) { m_state = eState::GameOver; }
 		else m_state = eState::PlayerDead;
 		

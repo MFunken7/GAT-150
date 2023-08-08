@@ -8,6 +8,10 @@
 #include "SpaceGame.h"
 #include "Core/MathUtils.h"
 
+#include "Framework/Components/SpriteComponent.h"
+#include "Framework/Components/EnginePhysicsComponent.h"
+#include "Framework/Resource/ResourceManager.h"
+
 #include "Framework/Emitter.h"
 
 void Player::Update(float dt)
@@ -23,7 +27,9 @@ void Player::Update(float dt)
 	if (kiko::g_InputSystem.GetKeyDown(SDL_SCANCODE_W)) thrust = 1;
 
 	kiko::vec2 forward = kiko::vec2{ 0,-1 }.Rotate(m_transform.rotation);
-	Addforce(forward * m_speed * thrust);
+
+	auto physicsComponent = GetComponent<kiko::PhysicsComponent>();
+	physicsComponent->ApplyForce(forward * m_speed * thrust);
 
 	//m_transform.position += forward * m_speed * thrust * kiko::g_time.GetDeltaTime();
 	m_transform.position.x = kiko::Wrap(m_transform.position.x, (float)kiko::g_Renderer.GetWidth());
@@ -31,13 +37,18 @@ void Player::Update(float dt)
 
 	if (kiko::g_InputSystem.GetKeyDown(SDL_SCANCODE_SPACE) && !kiko::g_InputSystem.GetPreviousKeyDown(SDL_SCANCODE_SPACE)) {
 		kiko::Transform transform{ m_transform.position, m_transform.rotation /*+ kiko::DegreesToRadians(10.0f)*/ , 1};
-		std::unique_ptr<Weapon> weapon = std::make_unique<Weapon>(40.0f , transform, kiko::g_manager.Get("bullet.txt"));
+		std::unique_ptr<Weapon> weapon = std::make_unique<Weapon>(40.0f , transform);
 		weapon->m_tag = "PlayerBullet";
+
+		std::unique_ptr<kiko::SpriteComponent> component = std::make_unique<kiko::SpriteComponent>();
+		component->m_texture = kiko::g_Resources.Get<kiko::Texture>("rocket.png", kiko::g_Renderer);
+		weapon->AddComponent(std::move(component));
+
 		m_scene->Add(std::move(weapon));
 		kiko::g_AudioSystem.PlayOneShot("laser");
 
 		/*kiko::Transform transform2{ m_transform.position, m_transform.rotation - kiko::DegreesToRadians(10.0f), 1};
-		weapon = std::make_unique<Weapon>(40.0f, transform2, kiko::g_manager.Get("ship.txt"));
+		weapon = std::make_unique<Weapon>(40.0f, transform2);
 		weapon->m_tag = "PlayerBullet";
 		m_scene->Add(std::move(weapon));
 		kiko::g_AudioSystem.PlayOneShot("laser");*/

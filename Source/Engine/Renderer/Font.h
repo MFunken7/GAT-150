@@ -1,11 +1,12 @@
 #pragma once
 #include <string>
+#include "Framework/Resource/Resource.h"
 
 struct _TTF_Font;
 
 namespace kiko
 {
-	class Font
+	class Font : public Resource
 	{
 		friend class Text;
 
@@ -14,7 +15,8 @@ namespace kiko
 		Font(const std::string& filename, int fontSize);
 		~Font();
 
-		void Load(const std::string& filename, int fontSize);
+		virtual bool Create(std::string filename, ...) override;
+		bool Load(const std::string& filename, int fontSize);
 
 	private:
 		_TTF_Font* m_ttfFont = nullptr;
