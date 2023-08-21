@@ -73,7 +73,7 @@ void SpaceGame::Update(float dt)
 				//break;
 			}
 
-			actor->active = false;
+			
 
 		}
 		break;
@@ -181,6 +181,7 @@ void SpaceGame::Update(float dt)
 
 void SpaceGame::Draw(kiko::Renderer& renderer)
 {
+	m_scene->Draw(renderer);
 	if (m_state == eState::Title) {
 		m_titleText->Draw(renderer, 350, 300);
 	}
@@ -194,5 +195,4 @@ void SpaceGame::Draw(kiko::Renderer& renderer)
 	m_scoreText->Draw(renderer, 40, 40);
 	m_livesText->Draw(renderer, 650, 40);
 	kiko::g_particleSystem.Draw(renderer);
-	m_scene->Draw(renderer);
 }
