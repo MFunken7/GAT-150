@@ -8,7 +8,7 @@ public:
 		Actor{ transform, model },
 		m_speed{ speed }
 	{
-		m_lifespan = 4.0f;
+		lifespan = 4.0f;
 	}
 
 	void Update(float dt) override;

@@ -1,12 +1,34 @@
 #include "SpriteComponent.h"
 #include "Renderer/Renderer.h"
 #include "Framework/Actor.h"
+#include "Framework/Resource/ResourceManager.h"
 
-void kiko::SpriteComponent::Update(float dt)
-{
-}
+namespace kiko {
+	CLASS_DEFINITION(SpriteComponent);
 
-void kiko::SpriteComponent::Draw(Renderer& renderer)
-{
-	renderer.DrawTexture(m_texture.get(), m_owner->m_transform.position.x, m_owner->m_transform.position.y, RadiansToDegrees(m_owner->m_transform.rotation));
+	bool SpriteComponent::Initialize()
+	{
+
+		if(!textureName.empty()) m_texture = GET_RESOURCE(Texture, textureName, g_Renderer);
+
+
+
+		return true;
+	}
+
+	void kiko::SpriteComponent::Update(float dt)
+	{
+	}
+
+	void kiko::SpriteComponent::Draw(Renderer& renderer)
+	{
+		renderer.DrawTexture(m_texture.get(), m_owner->transform);
+	}
+
+	void SpriteComponent::Read(const json_t& value) {
+		
+		
+		READ_DATA(value, textureName);
+
+	}
 }

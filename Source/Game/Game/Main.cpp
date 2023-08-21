@@ -1,17 +1,15 @@
 #include <iostream>
-#include "Renderer/Renderer.h"
 #include "Core/Core.h"
+#include "Renderer/Renderer.h"
+#include "Framework/Framework.h"
+
 #include "Renderer/ModelManager.h"
+
 #include "Input/InputSystem.h"
 #include "Audio/AudioSystem.h"
-#include "Core/Time.h"
-#include "Framework/Scene.h"
-#include "Framework/Resource/ResourceManager.h"
+
 #include "Player.h"
 #include "Enemey.h"
-#include "Renderer/Text.h"
-
-#include "Renderer/ParticleSystem.h"
 
 #include "SpaceGame.h"
 
@@ -52,8 +50,9 @@ public:
 };
 
 
+
 int main(int argc, char* argv[])
-{	
+{
 
 	INFO_LOG("hello world");
 
@@ -73,15 +72,16 @@ int main(int argc, char* argv[])
 	game->Initialize();
 
 
-	vector<Star> stars;
+	/*vector<Star> stars;
 	for (int i = 0; i < 1000; i++) {
 		kiko::Vector2 pos(kiko::random(kiko::g_Renderer.GetWidth()), kiko::random(kiko::g_Renderer.GetHeight()));
 		kiko::Vector2 vel(kiko::randomf(100, 40), 0.0f);
 
 		stars.push_back(Star(pos,vel));
-	}
+	}*/
 
-	
+
+
 	kiko::g_AudioSystem.PlayOneShot("music", true);
 	//main game loop
 	bool quit = false;
@@ -96,7 +96,7 @@ int main(int argc, char* argv[])
 		}
 		//update
 		kiko::g_AudioSystem.Update();
-		
+
 
 		game->Update(kiko::g_time.GetDeltaTime());
 
@@ -108,49 +108,22 @@ int main(int argc, char* argv[])
 		//draw
 		kiko::Vector2 vel(1.0f, 0.3f);
 
-		for(auto& star : stars){
-			star.Update(kiko::g_Renderer.GetWidth(), kiko::g_Renderer.GetHeight());
+		//for(auto& star : stars){
+			//star.Update(kiko::g_Renderer.GetWidth(), kiko::g_Renderer.GetHeight());
 
-			
-			kiko::g_Renderer.SetColor(kiko::random(256), kiko::random(256), kiko::random(256), 255);
-			star.Draw(kiko::g_Renderer);
-		}
+
+		//kiko::g_Renderer.SetColor(kiko::random(256), kiko::random(256), kiko::random(256), 255);
+		//star.Draw(kiko::g_Renderer);
+		//}
 
 
 		game->Draw(kiko::g_Renderer);
 
 
-	//	text->Draw(kiko::g_Renderer, 400, 300);
+		//	text->Draw(kiko::g_Renderer, 400, 300);
 
 		kiko::g_Renderer.EndFrame();
 	}
-
-	stars.clear();
-
+	//stars.clear();
 	return 0;
 }
-
-
-//if (kiko::g_InputSystem.GetMouseButtonDown(0))
-		//{
-		//	cout << "Left Mouse Button down." << endl;
-		//}if (kiko::g_InputSystem.GetMouseButtonDown(1))
-		//{
-		//	cout << "Middle Mouse Button down." << endl;
-		//}
-		//if (kiko::g_InputSystem.GetMouseButtonDown(2))
-		//{
-		//	cout << "Right Mouse Button down." << endl;
-		//}
-
-		//cout << kiko::g_InputSystem.GetMousePosition().x << ", " << kiko::g_InputSystem.GetMousePosition().y << endl;
-
-
-
-
-		/*kiko::vec2 direction;
-		if (inputSystem.GetKeyDown(SDL_SCANCODE_W)) direction.y = -1;
-		if (inputSystem.GetKeyDown(SDL_SCANCODE_S)) direction.y = 1;
-		if (inputSystem.GetKeyDown(SDL_SCANCODE_A)) direction.x = -1;
-		if (inputSystem.GetKeyDown(SDL_SCANCODE_D)) direction.x = 1;
-		transform.position += direction * speed * kiko::g_time.GetDeltaTime();*/

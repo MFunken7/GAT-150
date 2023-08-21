@@ -1,5 +1,6 @@
 #pragma once
 #include "Framework/Actor.h"
+#include "Framework/Components/PhysicsComponent.h"
 
 class Player : public kiko::Actor
 {
@@ -10,6 +11,8 @@ public:
 		m_turnRate{ turnRate }
 	{}
 
+	bool Initialize() override;
+
 	void Update(float dt) override;
 	void OnCollission(Actor* other) override;
 
@@ -17,4 +20,6 @@ private:
 	float m_speed = 0;
 	float m_turnRate = 0;
 	int m_health = 100;
+
+	kiko::PhysicsComponent* m_physicsComponent = nullptr;
 };

@@ -3,7 +3,6 @@
 #include <iostream>
 
 namespace kiko {
-	Logger g_Logger(LogLevel::Info, &std::cout, "log.txt");
 
 	bool Logger::Log(LogLevel logLevel, const std::string& filename, int line)
 	{

@@ -14,6 +14,8 @@ public:
 		m_fireTimer = m_fireTime;
 	}
 
+	bool Initialize() override;
+
 	void Update(float dt) override;
 	void OnCollission(Actor* other) override;
 

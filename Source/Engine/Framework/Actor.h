@@ -1,21 +1,28 @@
 #pragma once
+#include "Object.h"
 #include "Core/Core.h"
-#include "Renderer/Model.h"
+#include "Renderer/Renderer.h"
 #include "Components/Component.h"
 #include <memory>
 
 namespace kiko
 {
-	class Actor
+	class Actor : public Object
 	{
 	public:
+		CLASS_DECLARATION(Actor)
+
 		Actor() = default;
 		Actor(const kiko::Transform& transform, std::shared_ptr<Model> model) :
-		m_transform{ transform }
+		transform{ transform }
 		{}
 		Actor(const kiko::Transform& transform) :
-			m_transform{ transform }
+			transform{ transform }
 		{}
+		Actor(const Actor& other);
+
+		virtual bool Initialize() override;
+		virtual void OnDestroy() override;
 
 		virtual void Update(float dt);
 		virtual void Draw(kiko::Renderer& renderer);
@@ -30,33 +37,37 @@ namespace kiko
 
 
 
-		float GetLifespan() const { return m_lifespan; }
-		void SetLifespan(float lifespan) { m_lifespan = lifespan; }
+		float GetLifespan() const { return lifespan; }
+		void SetLifespan(float lifespan) { lifespan = lifespan; }
 
 
 		class Scene* m_scene = nullptr;
 		friend class Scene;
 		friend class Game;
 
-		kiko::Transform m_transform;
-		std::string m_tag;
+
+	public:
+
+		kiko::Transform transform;
+		std::string tag;
+
+		float lifespan = -1.0f;
+		bool persistent = false;
+		bool prototype = false;
+		bool m_destroyed = false;
+		
 
 		class Game* m_game = nullptr;
 
 	protected:
-		std::vector<std::unique_ptr<Component>> m_components;
-
-		bool m_destroyed = false;
-		float m_lifespan = -1.0f;
-
-		
+		std::vector<std::unique_ptr<Component>> components;
 	};
 
 
 	template<typename T>
 	inline T* Actor::GetComponent()
 	{
-		for (auto& component : m_components)
+		for (auto& component : components)
 		{
 			T* result = dynamic_cast<T*>(component.get());
 			if (result) return result;

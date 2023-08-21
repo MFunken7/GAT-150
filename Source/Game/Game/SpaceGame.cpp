@@ -3,39 +3,33 @@
 #include "Enemey.h"
 #include "Asteroid.h"
 
-#include "Framework/Scene.h"
+#include "Framework/Framework.h"
+#include "Renderer/Renderer.h"
 
 #include "Audio/AudioSystem.h"
 #include "Input/InputSystem.h"
-#include "Renderer/Renderer.h"
-#include "Renderer/Text.h"
+
+
 #include "Renderer/ModelManager.h"
 
-#include "Framework/Resource/ResourceManager.h"
-#include "Framework/Emitter.h"
-
-#include "Framework/Components/SpriteComponent.h"
-#include "Framework/Components/EnginePhysicsComponent.h"
-
-#include "Renderer/ParticleSystem.h"
 
 bool SpaceGame::Initialize()
 {
 	// create font / text objects
-	m_font = kiko::g_Resources.Get<kiko::Font>("BlackHanSans-Regular.ttf", 24);//std::make_shared<kiko::Font>("BlackHanSans-Regular.ttf", 24);
-	m_scoreText = std::make_unique<kiko::Text>(kiko::g_Resources.Get<kiko::Font>("BlackHanSans-Regular.ttf", 24));
+	m_font = GET_RESOURCE(kiko::Font,"BlackHanSans-Regular.ttf", 24);//std::make_shared<kiko::Font>("BlackHanSans-Regular.ttf", 24);
+	m_scoreText = std::make_unique<kiko::Text>(GET_RESOURCE(kiko::Font, "BlackHanSans-Regular.ttf", 24));
 	m_scoreText->Create(kiko::g_Renderer, "SCORE: 0000", kiko::Color{1, 1, 1, 1});
 
-	m_livesText = std::make_unique<kiko::Text>(kiko::g_Resources.Get<kiko::Font>("BlackHanSans-Regular.ttf", 24));
+	m_livesText = std::make_unique<kiko::Text>(GET_RESOURCE(kiko::Font, "BlackHanSans-Regular.ttf", 24));
 	m_livesText->Create(kiko::g_Renderer, "LIVES: 0", kiko::Color{1, 1, 1, 1});
 
-	m_titleText = std::make_unique<kiko::Text>(kiko::g_Resources.Get<kiko::Font>("BlackHanSans-Regular.ttf", 24));
+	m_titleText = std::make_unique<kiko::Text>(GET_RESOURCE(kiko::Font, "BlackHanSans-Regular.ttf", 24));
 	m_titleText->Create(kiko::g_Renderer, "SPACE", kiko::Color{1, 1, 1, 1});
 
-	m_gameOverText = std::make_unique<kiko::Text>(kiko::g_Resources.Get<kiko::Font>("BlackHanSans-Regular.ttf", 24));
+	m_gameOverText = std::make_unique<kiko::Text>(GET_RESOURCE(kiko::Font, "BlackHanSans-Regular.ttf", 24));
 	m_gameOverText->Create(kiko::g_Renderer, "GAME OVER", kiko::Color{1, 1, 1, 1});
 
-	m_deadText = std::make_unique<kiko::Text>(kiko::g_Resources.Get<kiko::Font>("BlackHanSans-Regular.ttf", 24));
+	m_deadText = std::make_unique<kiko::Text>(GET_RESOURCE(kiko::Font, "BlackHanSans-Regular.ttf", 24));
 	m_deadText->Create(kiko::g_Renderer, "YOU ARE DEAD", kiko::Color{1, 1, 1, 1});
 
 
@@ -44,6 +38,8 @@ bool SpaceGame::Initialize()
 	kiko::g_AudioSystem.AddAudio("music", "music.wav");
 
 	m_scene = std::make_unique<kiko::Scene>();
+	m_scene->Load("Scene.json");
+	m_scene->Initialize();
 
 	
 	
@@ -70,6 +66,15 @@ void SpaceGame::Update(float dt)
 		if (kiko::g_InputSystem.GetKeyDown(SDL_SCANCODE_SPACE))
 		{
 			m_state = eState::StartGame;
+			auto actor = m_scene->GetActorByName("Background");
+			if (actor == nullptr)
+			{
+				//WARNING_LOG("Actor doesn't exist")
+				//break;
+			}
+
+			actor->active = false;
+
 		}
 		break;
 	case SpaceGame::eState::StartGame:
@@ -81,18 +86,24 @@ void SpaceGame::Update(float dt)
 		m_scene->RemoveAll();
 	{
 		//create player
-		std::unique_ptr<Player> player = std::make_unique<Player>(10.0f, kiko::Pi, kiko::Transform{ {400, 300}, 0, 6 });
-		player->m_tag = "Player";
+		std::unique_ptr<Player> player = std::make_unique<Player>(10.0f, kiko::Pi, kiko::Transform{ {400, 300}, 0, 1 });
+		player->tag = "Player";
 		player->m_game = this;
 
 		//create components
-		std::unique_ptr<kiko::SpriteComponent> component = std::make_unique<kiko::SpriteComponent>();
-		component->m_texture = kiko::g_Resources.Get<kiko::Texture>("rocket.png", kiko::g_Renderer);
-		player->AddComponent(std::move(component));
-		auto physyicsComponent = std::make_unique<kiko::EnginePhysicsComponent>();
+		auto renderComponent = CREATE_CLASS(SpriteComponent)
+		renderComponent->m_texture = GET_RESOURCE(kiko::Texture, "rocket.png", kiko::g_Renderer);
+		player->AddComponent(std::move(renderComponent));
+		
+		auto physyicsComponent = CREATE_CLASS(EnginePhysicsComponent)
 		physyicsComponent->m_damping = 0.9f;
 		player->AddComponent(std::move(physyicsComponent));
 
+		auto collisionComponent = CREATE_CLASS(CircleCollisionComponent)
+		collisionComponent->m_radius = 30.0f;
+		player->AddComponent(std::move(collisionComponent));
+
+		player->Initialize();
 		m_scene->Add(move(player));
 
 	}
@@ -111,12 +122,22 @@ void SpaceGame::Update(float dt)
 		if (m_spawnTimer >= m_spawnTime) {
 			m_spawnTimer = 0;
 			std::unique_ptr<Enemey> enemey = std::make_unique<Enemey>(10.0f, kiko::Pi, kiko::Transform{ {kiko::random(600), kiko::random(600)}, kiko::randomf(kiko::TwoPi), 4 });
-			enemey->m_tag = "Enemey";
+			enemey->tag = "Enemey";
 			enemey->m_game = this;
+
+			auto renderComponent = CREATE_CLASS(ModelRenderComponent)
+			renderComponent->m_model = GET_RESOURCE(kiko::Model, "enemy.txt");
+			enemey->AddComponent(std::move(renderComponent));
+
+			auto collisionComponent = CREATE_CLASS(CircleCollisionComponent)
+			collisionComponent->m_radius = 30.0f;
+			enemey->AddComponent(std::move(collisionComponent));
+
+			enemey->Initialize();
 			m_scene->Add(move(enemey));
 
 			std::unique_ptr<Asteroid> asteroid = std::make_unique<Asteroid>(5.0f, kiko::randomf(6.0f,8.0f), kiko::Transform{ {kiko::random(600), kiko::random(600)}, kiko::randomf(kiko::TwoPi), 4 }, kiko::g_manager.Get("asteroid.txt"));
-			asteroid->m_tag = "Asteroid";
+			asteroid->tag = "Asteroid";
 			asteroid->m_game = this;
 			m_scene->Add(move(asteroid));
 		}

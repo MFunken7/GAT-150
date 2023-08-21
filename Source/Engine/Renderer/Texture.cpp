@@ -1,6 +1,7 @@
 #include "Texture.h"
 #include "Renderer.h"
 #include <SDL2-2.28.0/include/SDL_image.h>
+#include "Core/Logger.h"
 
 namespace kiko
 {
@@ -27,7 +28,7 @@ namespace kiko
 		SDL_Surface* surface = IMG_Load(filename.c_str());
 		if (!surface)
 		{
-			// LOG_WARNING
+			WARNING_LOG("Surface is empty")
 			return false;
 		}
 
@@ -47,7 +48,8 @@ namespace kiko
 		// ASSERT texture is not null
 		SDL_Point point;
 		
-		SDL_QueryTexture(m_texture, NULL, NULL, &point.x, &point.y);
+		SDL_QueryTexture(m_texture, nullptr, nullptr, &point.x, &point.y);
+
 		return vec2(point.x, point.y);
 	}
 
