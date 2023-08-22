@@ -62,6 +62,7 @@ void SpaceGame::Update(float dt)
 	switch (m_state)
 	{
 	case SpaceGame::eState::Title:
+		m_scene->GetActorByName("Title")->active = true;
 		
 		if (kiko::g_InputSystem.GetKeyDown(SDL_SCANCODE_SPACE))
 		{
@@ -69,12 +70,11 @@ void SpaceGame::Update(float dt)
 			auto actor = m_scene->GetActorByName("Background");
 			if (actor == nullptr)
 			{
-				//WARNING_LOG("Actor doesn't exist")
-				//break;
+				WARNING_LOG("Actor doesn't exist")
+				break;
 			}
 
-			
-
+			m_scene->GetActorByName("Title")->active = false;
 		}
 		break;
 	case SpaceGame::eState::StartGame:
@@ -182,9 +182,6 @@ void SpaceGame::Update(float dt)
 void SpaceGame::Draw(kiko::Renderer& renderer)
 {
 	m_scene->Draw(renderer);
-	if (m_state == eState::Title) {
-		m_titleText->Draw(renderer, 350, 300);
-	}
 	if (m_state == eState::GameOver) {
 		m_gameOverText->Draw(renderer, 350, 300);
 	}
