@@ -44,20 +44,13 @@ void PlatformGame::Update(float dt)
 	switch (m_state)
 	{
 	case PlatformGame::eState::Title:
-		m_scene->GetActorByName("Title")->active = true;
-
-		if (kiko::g_InputSystem.GetKeyDown(SDL_SCANCODE_SPACE))
-		{
-			m_state = eState::StartGame;
-			auto actor = m_scene->GetActorByName("Background");
-			if (actor == nullptr)
-			{
-				WARNING_LOG("Actor doesn't exist")
-					break;
-			}
-
-			m_scene->GetActorByName("Title")->active = false;
-		}
+	{
+		/*auto actor = INSTANTIATE(Actor, "Crate");
+		actor->transform.position = { kiko::random(kiko::g_Renderer.GetWidth()),100 };
+		actor->Initialize();
+		m_scene->Add(std::move(actor));*/
+	}
+		
 		break;
 	case PlatformGame::eState::StartGame:
 		m_score = 0;

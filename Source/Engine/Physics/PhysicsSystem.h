@@ -50,7 +50,7 @@ namespace kiko
 	private:
 		PhysicsSystem() = default;
 	private:
-		float m_pixelsPerUnit = 48.0f;
+		float m_pixelsPerUnit = 100.0f;
 
 		std::unique_ptr<b2World> m_world;
 		std::unique_ptr<ContactListener> m_contactListener;
