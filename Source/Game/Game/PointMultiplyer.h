@@ -12,7 +12,7 @@ public:
 	}
 
 	void Update(float dt) override;
-	void OnCollission(Actor* other) override;
+	void OnCollissionEnter(Actor* other) override;
 
 
 private:

@@ -1,5 +1,6 @@
 #pragma once
 #include "RenderComponent.h"
+#include "Core/Math/Color.h"
 
 namespace kiko
 {
@@ -7,7 +8,7 @@ namespace kiko
 	{
 	public:
 		CLASS_DECLARATION(TextRenderComponent);
-		
+
 		TextRenderComponent() = default;
 		TextRenderComponent(const TextRenderComponent& other);
 
@@ -21,6 +22,7 @@ namespace kiko
 		std::string text;
 		std::string fontName;
 		int fontSize = 0;
+		Color color{ 1, 1, 1, 1 };
 
 	private:
 		bool m_changed = true;

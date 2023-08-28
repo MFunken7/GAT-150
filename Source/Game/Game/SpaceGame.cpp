@@ -50,6 +50,12 @@ bool SpaceGame::Initialize()
 		m_scene->Add(move(enemey));
 	}*/
 
+	EVENT_SUBSCRIBE("AddPoints", SpaceGame::AddPoints);
+	EVENT_SUBSCRIBE("OnPlayerDead", SpaceGame::OnPlayerDead);
+
+	//kiko::EventManager::Instance().Subscribe("AddPoints", this, std::bind(&SpaceGame::AddPoints, this, std::placeholders::_1));
+	//kiko::EventManager::Instance().Subscribe("OnPlayerDead", this, std::bind(&SpaceGame::OnPlayerDead, this, std::placeholders::_1));
+
 	return true;
 }
 
@@ -85,26 +91,30 @@ void SpaceGame::Update(float dt)
 	case SpaceGame::eState::StartLevel:
 		m_scene->RemoveAll();
 	{
-		//create player
-		std::unique_ptr<Player> player = std::make_unique<Player>(10.0f, kiko::Pi, kiko::Transform{ {400, 300}, 0, 1 });
-		player->tag = "Player";
-		player->m_game = this;
 
-		//create components
-		auto renderComponent = CREATE_CLASS(SpriteComponent)
-		renderComponent->m_texture = GET_RESOURCE(kiko::Texture, "rocket.png", kiko::g_Renderer);
-		player->AddComponent(std::move(renderComponent));
-		
-		auto physyicsComponent = CREATE_CLASS(EnginePhysicsComponent)
-		physyicsComponent->m_damping = 0.9f;
-		player->AddComponent(std::move(physyicsComponent));
-
-		auto collisionComponent = CREATE_CLASS(CircleCollisionComponent)
-		collisionComponent->m_radius = 30.0f;
-		player->AddComponent(std::move(collisionComponent));
-
+		auto player = INSTANTIATE(Player, "Player");
 		player->Initialize();
-		m_scene->Add(move(player));
+		m_scene->Add(std::move(player));
+		//create player
+		//std::unique_ptr<kiko::Player> player = std::make_unique<kiko::Player>(10.0f, kiko::Pi, kiko::Transform{ {400, 300}, 0, 1 });
+		//player->tag = "Player";
+		//player->m_game = this;
+
+		////create components
+		//auto renderComponent = CREATE_CLASS(SpriteComponent)
+		//renderComponent->m_texture = GET_RESOURCE(kiko::Texture, "rocket.png", kiko::g_Renderer);
+		//player->AddComponent(std::move(renderComponent));
+		//
+		//auto physyicsComponent = CREATE_CLASS(EnginePhysicsComponent)
+		//physyicsComponent->m_damping = 0.9f;
+		//player->AddComponent(std::move(physyicsComponent));
+
+		//auto collisionComponent = CREATE_CLASS(CircleCollisionComponent)
+		//collisionComponent->m_radius = 30.0f;
+		//player->AddComponent(std::move(collisionComponent));
+
+		//player->Initialize();
+		//m_scene->Add(move(player));
 
 	}
 		m_state = eState::Game;
@@ -121,7 +131,11 @@ void SpaceGame::Update(float dt)
 		
 		if (m_spawnTimer >= m_spawnTime) {
 			m_spawnTimer = 0;
-			std::unique_ptr<Enemey> enemey = std::make_unique<Enemey>(10.0f, kiko::Pi, kiko::Transform{ {kiko::random(600), kiko::random(600)}, kiko::randomf(kiko::TwoPi), 4 });
+			auto enemey = INSTANTIATE(Enemey, "Enemey");
+			enemey->Initialize();
+			m_scene->Add(std::move(enemey));
+
+			/*std::unique_ptr<kiko::Enemey> enemey = std::make_unique<kiko::Enemey>(10.0f, kiko::Pi, kiko::Transform{ {kiko::random(600), kiko::random(600)}, kiko::randomf(kiko::TwoPi), 4 });
 			enemey->tag = "Enemey";
 			enemey->m_game = this;
 
@@ -139,7 +153,7 @@ void SpaceGame::Update(float dt)
 			std::unique_ptr<Asteroid> asteroid = std::make_unique<Asteroid>(5.0f, kiko::randomf(6.0f,8.0f), kiko::Transform{ {kiko::random(600), kiko::random(600)}, kiko::randomf(kiko::TwoPi), 4 }, kiko::g_manager.Get("asteroid.txt"));
 			asteroid->tag = "Asteroid";
 			asteroid->m_game = this;
-			m_scene->Add(move(asteroid));
+			m_scene->Add(move(asteroid));*/
 		}
 		
 		
@@ -192,4 +206,15 @@ void SpaceGame::Draw(kiko::Renderer& renderer)
 	m_scoreText->Draw(renderer, 40, 40);
 	m_livesText->Draw(renderer, 650, 40);
 	kiko::g_particleSystem.Draw(renderer);
+}
+
+void SpaceGame::AddPoints(const kiko::Event& event)
+{
+	m_score += std::get<int>(event.data);
+}
+
+void SpaceGame::OnPlayerDead(const kiko::Event& event)
+{
+	m_lives--;
+	m_state = eState::PlayerDeadStart;
 }

@@ -20,6 +20,9 @@ namespace kiko
 			transform{ transform }
 		{}
 		Actor(const Actor& other);
+		virtual ~Actor() {
+			OnDestroy();
+		}
 
 		virtual bool Initialize() override;
 		virtual void OnDestroy() override;
@@ -33,7 +36,9 @@ namespace kiko
 		T* GetComponent();
 
 		float GetRadius() { return 30.0f; }
-		virtual void OnCollission(Actor* other) {}
+
+		virtual void OnCollissionEnter(Actor* other) {}
+		virtual void OnCollissionExit(Actor* other) {}
 
 
 

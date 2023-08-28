@@ -2,6 +2,7 @@
 #include "RenderComponent.h"
 #include "Renderer/Texture.h"
 #include "Framework/Factory.h"
+#include "Core/Math/Rect.h"
 
 namespace kiko
 {
@@ -16,9 +17,8 @@ namespace kiko
 
 		virtual float GetRadius() override { return m_texture->GetSize().Length() * 0.5f; }
 
-		
-
 	public:
+		Rect source;
 		std::string textureName;
 		res_t<Texture> m_texture;
 	};

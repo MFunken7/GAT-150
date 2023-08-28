@@ -14,9 +14,15 @@
 #include "Components/PhysicsComponent.h"
 #include "Components/EnginePhysicsComponent.h"
 #include "Components/CircleCollisionComponent.h"
+#include "Components/Box2DPhysicsComponent.h"
+#include "Components/Box2DCollisionComponent.h"
 
 //Resources
 #include "Resource/Resource.h"
 #include "Resource/ResourceManager.h"
 
 #include "Factory.h"
+
+//Event
+#include "Event/Event.h"
+#include "Event/EventManager.h"

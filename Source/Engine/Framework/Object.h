@@ -1,5 +1,5 @@
 #pragma once
-#include "Factory.h"
+#include "Framework/Factory.h"
 #include "Core/Json.h"
 #include <string>
 
@@ -19,6 +19,7 @@
 #define CLASS_DEFINITION(classname) \
 	classname::Register register_class;
 
+
 namespace kiko {
 
 	class Object
@@ -32,6 +33,8 @@ namespace kiko {
 
 		virtual bool Initialize() { return true; }
 		virtual void OnDestroy() {}
+
+		
 
 	public:
 		std::string m_name;

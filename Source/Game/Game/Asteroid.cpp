@@ -18,7 +18,7 @@ void Asteroid::Update(float dt)
 	transform.position.y = kiko::Wrap(transform.position.y, (float)kiko::g_Renderer.GetHeight());
 }
 
-void Asteroid::OnCollission(Actor* other)
+void Asteroid::OnCollissionEnter(Actor* other)
 {
  	if (other->tag == "PlayerBullet") {
 		m_health -= 10;

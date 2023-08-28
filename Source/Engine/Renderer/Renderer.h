@@ -5,6 +5,7 @@
 #include "ParticleSystem.h"
 #include "Text.h"
 #include "Texture.h"
+#include "Core/Math/Rect.h"
 
 #include <SDL2-2.28.0/include/SDL.h>
 #include <string>
@@ -39,6 +40,7 @@ namespace kiko
 
 		void DrawTexture(class Texture* texture, float x, float y, float angle = 0.0f);
 		void DrawTexture(class Texture* texture, const Transform& transform);
+		void DrawTexture(class Texture* texture, const Rect& source ,const Transform& transform);
 
 		friend class Texture;
 

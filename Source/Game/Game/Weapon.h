@@ -2,6 +2,7 @@
 #include "Framework/Actor.h"
 
 
+
 namespace kiko {
 class Weapon : public kiko::Actor
 {
@@ -21,8 +22,10 @@ public:
 
 	bool Initialize() override;
 	void Update(float dt) override;
-	void OnCollission(Actor* other);
-private:
+	void OnCollissionEnter(Actor* other);
+public:
+	class PhysicsComponent* m_physicsComponent = nullptr;
+
 	float speed = 0;
 	float m_turnRate = 0;
 };

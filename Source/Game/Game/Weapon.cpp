@@ -1,6 +1,7 @@
 #include "Weapon.h"
 #include "Renderer/Renderer.h"
 #include "Framework/Components/CollisionComponent.h"
+#include "Framework/Components/PhysicsComponent.h"
 #include "Framework/Components/RenderComponent.h"
 
 
@@ -14,20 +15,11 @@ namespace kiko {
 		Actor::Initialize();
 
 
+		m_physicsComponent = GetComponent<kiko::PhysicsComponent>();
 		auto collisonComponent = GetComponent<kiko::CollisionComponent>();
 		if (collisonComponent)
 		{
-			auto renderComponent = GetComponent<kiko::RenderComponent>();
-
-			if (renderComponent) {
-				float scale = transform.scale;
-				collisonComponent->m_radius = renderComponent->GetRadius() * scale;
-			}
-
 		}
-
-	
-	
 
 		return true;
 	}
@@ -38,12 +30,14 @@ namespace kiko {
 		Actor::Update(dt);
 
 		kiko::vec2 forward = kiko::vec2{ 0,-1 }.Rotate(transform.rotation);
-		transform.position += forward * speed * speed * kiko::g_time.GetDeltaTime();
+
+		m_physicsComponent->SetVelocity(forward * speed);
+		//transform.position += forward * speed * speed * kiko::g_time.GetDeltaTime();
 		transform.position.x = kiko::Wrap(transform.position.x, (float)kiko::g_Renderer.GetWidth());
 		transform.position.y = kiko::Wrap(transform.position.y, (float)kiko::g_Renderer.GetHeight());
 	}
 
-	void Weapon::OnCollission(Actor* other)
+	void Weapon::OnCollissionEnter(Actor* other)
 	{
 		if (other->tag + "Bullet" != tag && other->tag != tag) {
 			m_destroyed = true;

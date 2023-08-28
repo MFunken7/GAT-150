@@ -88,6 +88,9 @@ namespace kiko
 		if (iter != m_registry.end()){
 			return std::unique_ptr<T>(dynamic_cast<T*>(iter->second->Create().release()));
 		}
+
+		ERROR_LOG("Class not found in Factory: " << key);
+
 		return std::unique_ptr<T>();
 	}
 }

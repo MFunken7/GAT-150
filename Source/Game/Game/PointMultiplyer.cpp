@@ -12,7 +12,7 @@ void PointMultiplyer::Update(float dt)
 	transform.position.y = kiko::Wrap(transform.position.y, (float)kiko::g_Renderer.GetHeight());
 }
 
-void PointMultiplyer::OnCollission(Actor* other)
+void PointMultiplyer::OnCollissionEnter(Actor* other)
 {
 	if (other->tag == "Player") {
 		m_game->SetMultiplyer(2);

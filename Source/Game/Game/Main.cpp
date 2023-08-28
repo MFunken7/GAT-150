@@ -17,6 +17,7 @@
 #include <chrono>
 #include <vector>
 #include <thread>
+#include <functional>
 
 
 using namespace std;
@@ -103,6 +104,7 @@ int main(int argc, char* argv[])
 		game->Update(kiko::g_time.GetDeltaTime());
 
 		kiko::g_particleSystem.Update(kiko::g_time.GetDeltaTime());
+		kiko::PhysicsSystem::Instance().Update(kiko::g_time.GetDeltaTime());
 
 		//draw game
 		kiko::g_Renderer.SetColor(0, 0, 0, 0);
