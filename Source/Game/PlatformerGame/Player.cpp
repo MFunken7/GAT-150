@@ -25,26 +25,30 @@ namespace kiko {
 	{
 		Actor::Update(dt);
 
+		bool onGround = (groundCount > 0);
+		vec2 velocity = m_physicsComponent->m_velocity;
+
 		float dir = 0;
 		if (g_InputSystem.GetKeyDown(SDL_SCANCODE_A)) dir = -1;
 		if (g_InputSystem.GetKeyDown(SDL_SCANCODE_D)) dir = 1;
 		//transform.rotation += rotate * m_turnRate * kiko::g_time.GetDeltaTime();
 
-		vec2 forward = vec2{ 1,0 };
+		if (dir != 0) {
+			velocity.x += speed * dir * ((onGround) ? 1 : 0.25f) * dt;
+			velocity.x = Clamp(velocity.x, -maxSpeed, maxSpeed);
+			m_physicsComponent->SetVelocity(velocity);
+		}
 
-		m_physicsComponent->ApplyForce(forward * speed * dir);
-
-
-		bool onGround = (groundCount > 0);
 		
 
 		if (onGround && kiko::g_InputSystem.GetKeyDown(SDL_SCANCODE_SPACE) && !kiko::g_InputSystem.GetPreviousKeyDown(SDL_SCANCODE_SPACE)) {
 			kiko::vec2 up = kiko::vec2{ 0,-1 };
-			m_physicsComponent->SetVelocity(up * jump);
+			m_physicsComponent->SetVelocity(velocity + (up * jump));
 		}
 
+		m_physicsComponent->SetGravityScale((velocity.y > 0) ? 1.7f : 1.2f);
+
 		//animation
-		vec2 velocity = m_physicsComponent->m_velocity;
 		if (std::fabs(velocity.x) > 0.2f)
 		{
 			if(dir!=0)m_spriteComponent->flipH = (dir < 0);
@@ -72,6 +76,7 @@ namespace kiko {
 		Actor::Read(value);
 
 		READ_DATA(value, speed);
+		READ_DATA(value, maxSpeed);
 		READ_DATA(value, jump);
 	}
 }

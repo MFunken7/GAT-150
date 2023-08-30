@@ -125,7 +125,8 @@
       "m_name": "Player",
       "tag": "Player",
       "persistent": true,
-      "speed":2,
+      "speed": 20,
+      "maxSpeed": 60,
       "jump": 8,
       "transform": {
         "position": [ 400, 300 ],
@@ -136,6 +137,8 @@
         {
           "type": "SpriteAnimRenderComponent",
           "defaultSequenceName": "idle",
+          "source": [0,0,16,35],
+          "origin": [ 0.5, 1 ],
           "sequences": [
             {
               "name": "idle",
@@ -157,7 +160,7 @@
         },
         {
           "type": "Box2DCollisionComponent",
-          "resitution": 0
+          "resitution" :  0
         }
       ]
     }
