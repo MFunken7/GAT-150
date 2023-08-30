@@ -10,14 +10,13 @@
 bool PlatformGame::Initialize()
 {
 	//load audio
-	kiko::g_AudioSystem.AddAudio("laser", "laser-gun.wav");
-	kiko::g_AudioSystem.AddAudio("music", "music.wav");
+	//kiko::g_AudioSystem.AddAudio("laser", "laser-gun.wav");
+	//kiko::g_AudioSystem.AddAudio("music", "music.wav");
 
 	m_scene = std::make_unique<kiko::Scene>();
 	m_scene->Load("Scenes/PlatformerScene.json");
+	m_scene->Load("Scenes/tilemap.json");
 	m_scene->Initialize();
-
-
 
 	/*std::vector<Enemey> enemies;
 	for (int i = 0; i < 5; i++) {

@@ -170,6 +170,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\Build\Assets\Scenes\PlatformerScene.json" />
+    <None Include="..\..\..\Build\Assets\Scenes\tilemap.json" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

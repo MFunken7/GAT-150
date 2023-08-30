@@ -15,7 +15,8 @@ namespace kiko {
 	{
 		Actor::Initialize();
 
-		m_physicsComponent = GetComponent<kiko::PhysicsComponent>();
+		m_physicsComponent = GetComponent<PhysicsComponent>();
+		m_spriteComponent = GetComponent<SpriteAnimRenderComponent>();
 	
 		return true;
 	}
@@ -25,11 +26,11 @@ namespace kiko {
 		Actor::Update(dt);
 
 		float dir = 0;
-		if (kiko::g_InputSystem.GetKeyDown(SDL_SCANCODE_A)) dir = -1;
-		if (kiko::g_InputSystem.GetKeyDown(SDL_SCANCODE_D)) dir = 1;
+		if (g_InputSystem.GetKeyDown(SDL_SCANCODE_A)) dir = -1;
+		if (g_InputSystem.GetKeyDown(SDL_SCANCODE_D)) dir = 1;
 		//transform.rotation += rotate * m_turnRate * kiko::g_time.GetDeltaTime();
 
-		kiko::vec2 forward = kiko::vec2{ 1,0 };
+		vec2 forward = vec2{ 1,0 };
 
 		m_physicsComponent->ApplyForce(forward * speed * dir);
 
@@ -42,6 +43,17 @@ namespace kiko {
 			m_physicsComponent->SetVelocity(up * jump);
 		}
 
+		//animation
+		vec2 velocity = m_physicsComponent->m_velocity;
+		if (std::fabs(velocity.x) > 0.2f)
+		{
+			if(dir!=0)m_spriteComponent->flipH = (dir < 0);
+			m_spriteComponent->SetSequence("idle");
+		}
+		else
+		{
+			m_spriteComponent->SetSequence("idle");
+		}
 
 	}
 	void Player::OnCollissionEnter(Actor* other)

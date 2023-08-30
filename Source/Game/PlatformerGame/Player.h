@@ -1,6 +1,5 @@
 #pragma once
 #include "Framework/Actor.h"
-#include "Framework/Components/PhysicsComponent.h"
 
 
 namespace kiko {
@@ -25,6 +24,7 @@ namespace kiko {
 
 		int m_health = 100;
 
-		kiko::PhysicsComponent* m_physicsComponent = nullptr;
+		class PhysicsComponent* m_physicsComponent = nullptr;
+		class SpriteAnimRenderComponent* m_spriteComponent = nullptr;
 	};
 }
